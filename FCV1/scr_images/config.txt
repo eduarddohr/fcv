@@ -1,0 +1,3 @@
+BoxFilter:7
+HighPass:0
+Sharpenning:0
