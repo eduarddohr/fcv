@@ -12,12 +12,17 @@ def BoxFilter(imageToTransform, parameter):
     return cv2.filter2D(imageToTransform, -1, kernel)
 
 
-def HighPass(imageToTransform, parameter):
+def GaussianFilter(imageToTransform, parameter):
+    kernel = cv2.getGaussianKernel(int(parameter[0]), int(parameter[1]))
+    return cv2.sepFilter2D(imageToTransform, -1, kernel, kernel)
+
+
+def HighPass(imageToTransform):
     kernel = np.array([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
     return cv2.filter2D(imageToTransform, -1, kernel)
 
 
-def Sharpening(imageToTransform, parameter):
+def Sharpening(imageToTransform):
     kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
     return cv2.filter2D(imageToTransform, -1, kernel)
 
@@ -41,17 +46,28 @@ def Shear(image, parameters):
     return cv2.warpAffine(image, translation, (width, height))
 
 
+def Scale(image, parameters):
+    scale = float(parameters[0])
+    height, width = image.shape[:2]
+    scaledHeight = int(height * scale)
+    scaledWidth = int(width * scale)
+    translation = np.float32([[scale, 0, 0], [0, scale, 0]])
+    return cv2.warpAffine(image, translation, (scaledWidth, scaledHeight))
+
+
 def Flip(image, parameters):
     return cv2.flip(image, int(parameters[0]))
 
 
-def applyTransformations(imageToTransform, transformation, parameter):
+def applyTransformations(imageToTransform, transformation, parameter=''):
     if transformation == "BoxFilter":
         return BoxFilter(imageToTransform, parameter[0])
+    if transformation == "GaussianFilter":
+        return GaussianFilter(imageToTransform, parameter)
     elif transformation == "HighPass":
-        return HighPass(imageToTransform, parameter[0])
+        return HighPass(imageToTransform)
     elif transformation == "Sharpening":
-        return Sharpening(imageToTransform, parameter[0])
+        return Sharpening(imageToTransform)
     elif transformation == "Rotate":
         return Rotate(imageToTransform, parameter[0])
     elif transformation == "Translate":
@@ -60,6 +76,8 @@ def applyTransformations(imageToTransform, transformation, parameter):
         return Shear(image, parameter)
     elif transformation == "Flip":
         return Flip(image, parameter)
+    elif transformation == "Scale":
+        return Scale(image, parameter)
 
 
 directory = filedialog.askdirectory()
@@ -76,6 +94,7 @@ if directory:
     configFileLines = configFile.readlines()
     for line in configFileLines:
         counter = 1
+        line = line.rstrip()
         for imagePath in imagesList:
             image = cv2.imread(imagePath)
             imageName = imagePath.split("\\")
@@ -84,8 +103,11 @@ if directory:
             options = line.split(';')
             for op in options:
                 option = op.split(':')
-                parameters = option[1].split(',')
-                image = applyTransformations(image, option[0], parameters)
+                if len(option) > 1:
+                    parameters = option[1].split(',')
+                    image = applyTransformations(image, option[0], parameters)
+                else:
+                    image = applyTransformations(image, option[0])
                 appliedTransformations += option[0] + "_"
             cv2.imwrite(newDir + "/" + imageName2[0] + "_" + appliedTransformations + str(counter) + ".jpg", image)
             counter += counter
