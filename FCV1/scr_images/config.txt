@@ -1,3 +1,7 @@
-BoxFilter:7
+BoxFilter:7;Rotate:30
 HighPass:0
-Sharpenning:0
+Sharpening:0
+Rotate:45
+Translate:140,203;Rotate:22;Sharpening:0
+Shear:0,1,0.2
+Flip:0
