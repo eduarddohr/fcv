@@ -7,3 +7,4 @@ BoxFilter:2;Rotate:30
 HighPass
 Sharpening
 Rotate:45
+Translate:100,200

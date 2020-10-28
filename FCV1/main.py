@@ -93,23 +93,25 @@ if directory:
     configFile = open(directory + "/config.txt")
     configFileLines = configFile.readlines()
     counter = 1
-    for line in configFileLines:
-        line = line.rstrip()
-        for imagePath in imagesList:
-            image = cv2.imread(imagePath)
-            imageName = imagePath.split("\\")
-            imageName2 = imageName[-1].split(".")
+    for imagePath in imagesList:
+        image = cv2.imread(imagePath)
+        imageName = imagePath.split("\\")
+        imageName2 = imageName[-1].split(".")
+
+        for line in configFileLines:
+            line = line.rstrip()
             appliedTransformations = ""
             options = line.split(';')
+            modifiedImage = image
             for op in options:
                 option = op.split(':')
                 if len(option) > 1:
                     parameters = option[1].split(',')
-                    image = applyTransformations(image, option[0], parameters)
+                    modifiedImage = applyTransformations(modifiedImage, option[0], parameters)
                 else:
-                    image = applyTransformations(image, option[0])
+                    modifiedImage = applyTransformations(modifiedImage, option[0])
                 appliedTransformations += option[0] + "_"
-            cv2.imwrite(newDir + "/" + imageName2[0] + "_" + appliedTransformations + str(counter) + ".jpg", image)
+            cv2.imwrite(newDir + "/" + imageName2[0] + "_" + appliedTransformations + str(counter) + ".jpg", modifiedImage)
             counter += 1
 
 else:
