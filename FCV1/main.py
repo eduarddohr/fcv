@@ -92,8 +92,8 @@ if directory:
 
     configFile = open(directory + "/config.txt")
     configFileLines = configFile.readlines()
+    counter = 1
     for line in configFileLines:
-        counter = 1
         line = line.rstrip()
         for imagePath in imagesList:
             image = cv2.imread(imagePath)
@@ -110,7 +110,7 @@ if directory:
                     image = applyTransformations(image, option[0])
                 appliedTransformations += option[0] + "_"
             cv2.imwrite(newDir + "/" + imageName2[0] + "_" + appliedTransformations + str(counter) + ".jpg", image)
-            counter += counter
+            counter += 1
 
 else:
     print("dir does not exist")
