@@ -1,5 +1,5 @@
 Translate:140,203;Rotate:22;Sharpening
-Shear:0,1,0.2
+Shear:0.1,0.2
 Flip:0
 Scale:0.8
 GaussianFilter:5,8
@@ -8,3 +8,4 @@ HighPass
 Sharpening
 Rotate:45
 Translate:100,200
+GammaCorrection:2.2

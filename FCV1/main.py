@@ -59,6 +59,13 @@ def Flip(image, parameters):
     return cv2.flip(image, int(parameters[0]))
 
 
+def GammaCorrection(image, gamma):
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255
+                      for i in np.arange(0, 256)]).astype("uint8")
+    return cv2.LUT(image, table)
+
+
 def applyTransformations(imageToTransform, transformation, parameter=''):
     if transformation == "BoxFilter":
         return BoxFilter(imageToTransform, parameter[0])
@@ -78,6 +85,8 @@ def applyTransformations(imageToTransform, transformation, parameter=''):
         return Flip(image, parameter)
     elif transformation == "Scale":
         return Scale(image, parameter)
+    elif transformation == "GammaCorrection":
+        return GammaCorrection(image, float(parameter[0]))
 
 
 directory = filedialog.askdirectory()
@@ -111,7 +120,8 @@ if directory:
                 else:
                     modifiedImage = applyTransformations(modifiedImage, option[0])
                 appliedTransformations += option[0] + "_"
-            cv2.imwrite(newDir + "/" + imageName2[0] + "_" + appliedTransformations + str(counter) + ".jpg", modifiedImage)
+            cv2.imwrite(newDir + "/" + imageName2[0] + "_" + appliedTransformations + str(counter) + ".jpg",
+                        modifiedImage)
             counter += 1
 
 else:
